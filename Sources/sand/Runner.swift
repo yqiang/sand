@@ -95,6 +95,9 @@ struct Runner: Sendable {
         let vm = config.vm
         let provisionerConfig = config.provisioner
         let source = vm.source.resolvedSource
+        // Recheck every attempt, before a pull, clone or other VM lifecycle action.
+        try HostStoragePreflight().validate(additionalDisks: vm.additionalDisks,
+                                            minimumFreeBytes: vm.minimumHostFreeBytes)
         if vm.source.type == .oci {
             logger.info("prepare source \(source)")
             do {

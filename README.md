@@ -208,6 +208,21 @@ survive failed jobs. Provision the storage separately, and do not attach the sam
 writable disk to concurrent runners. The host must not mount it read-write while a
 guest owns it. Read-only disks may be shared when supported by Tart.
 
+### Downstream host storage policy
+
+The `fitbee/host-storage-preflight` branch additionally supports optional
+`vm.minimumHostFreeBytes`. When set, Sand checks free space on the Tart store
+(`TART_HOME`, default `~/.tart`) and every additional disk's filesystem at startup
+and before each runner attempt, before pulling or cloning a VM. A value below
+the configured minimum or an unreadable filesystem fails closed; equality passes.
+
+This opt-in policy requires additional disks to be existing regular local image
+files without attachment-option suffixes. Directory, symlink, missing and remote
+attachments are rejected. When omitted, the general Tart attachment syntax is
+unchanged. The check never opens, mounts or modifies an image's contents.
+
+This downstream policy is separate from the upstream-facing additional-disks PR.
+
 ## Acknowledgements
 
 - https://github.com/cirruslabs/tart - doing all the heavy lifting interacting with VMs.

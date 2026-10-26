@@ -71,6 +71,12 @@ final class ConfigValidator {
     }
 
     private func validateVM(_ vm: Config.VM, issues: inout [ConfigValidationIssue]) {
+        do {
+            try HostStoragePreflight().validate(additionalDisks: vm.additionalDisks,
+                                                minimumFreeBytes: vm.minimumHostFreeBytes)
+        } catch {
+            issues.append(.init(severity: .error, message: error.localizedDescription))
+        }
         switch vm.source.type {
         case .oci:
             if (vm.source.image ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {

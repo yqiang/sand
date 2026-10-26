@@ -25,6 +25,7 @@ runners:
         rootDiskOpts: null
       diskSizeGb: null
       additionalDisks: []
+      minimumHostFreeBytes: null
       ssh:
         user: admin
         password: admin
