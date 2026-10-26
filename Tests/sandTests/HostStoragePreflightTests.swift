@@ -14,14 +14,14 @@ struct HostStoragePreflightTests {
             Issue.record("Capacity must not be queried when policy is omitted")
             return 0
         })
-        try policy.validate(additionalDisks: ["nbd://localhost:10809/cache:ro"], minimumFreeBytes: nil)
+        try policy.validate(additionalDisks: [try DiskAttachment(source: "nbd://localhost:10809/cache", readOnly: true)], minimumFreeBytes: nil)
     }
 
     @Test func checksStoreAndDiskFilesystemsAndAcceptsEquality() throws {
         try withImage { image in
             var checked: [String] = []
             let policy = HostStoragePreflight(availableBytes: { path in checked.append(path); return 100 })
-            try policy.validate(additionalDisks: [image.path], minimumFreeBytes: 100, tartHome: "/store")
+            try policy.validate(additionalDisks: [try DiskAttachment(source: image.path)], minimumFreeBytes: 100, tartHome: "/store")
             #expect(checked == ["/store", image.path])
         }
     }
@@ -33,7 +33,7 @@ struct HostStoragePreflightTests {
                 (path == "/store") == storeIsLow ? 99 : 100
             })
             #expect(throws: HostStoragePreflight.Failure.self) {
-                try policy.validate(additionalDisks: [image.path], minimumFreeBytes: 100, tartHome: "/store")
+                try policy.validate(additionalDisks: [try DiskAttachment(source: image.path)], minimumFreeBytes: 100, tartHome: "/store")
             }
         }
     }
@@ -55,7 +55,7 @@ struct HostStoragePreflightTests {
             let policy = HostStoragePreflight(availableBytes: { _ in 100 })
             for path in [image.deletingLastPathComponent().path, link.path, image.path + "-missing"] {
                 #expect(throws: (any Error).self) {
-                    try policy.validate(additionalDisks: [path], minimumFreeBytes: 1, tartHome: "/store")
+                    try policy.validate(additionalDisks: [try DiskAttachment(source: path)], minimumFreeBytes: 1, tartHome: "/store")
                 }
             }
         }

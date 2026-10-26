@@ -12,7 +12,7 @@ struct Config: Decodable, Sendable {
         let run: RunOptions
         let diskSizeGb: Int?
         let ssh: SSH
-        let additionalDisks: [String]
+        let additionalDisks: [DiskAttachment]
         let minimumHostFreeBytes: UInt64?
 
         init(
@@ -23,7 +23,7 @@ struct Config: Decodable, Sendable {
             run: RunOptions,
             diskSizeGb: Int?,
             ssh: SSH,
-            additionalDisks: [String] = [],
+            additionalDisks: [DiskAttachment] = [],
             minimumHostFreeBytes: UInt64? = nil
         ) {
             self.source = source
@@ -46,7 +46,7 @@ struct Config: Decodable, Sendable {
             self.run = try container.decodeIfPresent(RunOptions.self, forKey: .run) ?? .default
             self.diskSizeGb = try container.decodeIfPresent(Int.self, forKey: .diskSizeGb)
             self.ssh = try container.decodeIfPresent(SSH.self, forKey: .ssh) ?? .standard
-            self.additionalDisks = try container.decodeIfPresent([String].self, forKey: .additionalDisks) ?? []
+            self.additionalDisks = try container.decodeIfPresent([DiskAttachment].self, forKey: .additionalDisks) ?? []
             self.minimumHostFreeBytes = try container.decodeIfPresent(UInt64.self, forKey: .minimumHostFreeBytes)
         }
 
@@ -382,7 +382,7 @@ struct Config: Decodable, Sendable {
             run: vm.run,
             diskSizeGb: vm.diskSizeGb,
             ssh: vm.ssh,
-            additionalDisks: vm.additionalDisks.map(Config.expandPath),
+            additionalDisks: vm.additionalDisks.map { $0.expanded() },
             minimumHostFreeBytes: vm.minimumHostFreeBytes
         )
     }

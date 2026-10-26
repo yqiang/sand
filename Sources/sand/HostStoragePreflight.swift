@@ -28,14 +28,14 @@ struct HostStoragePreflight {
     }
 
     func validate(
-        additionalDisks: [String],
+        additionalDisks: [DiskAttachment],
         minimumFreeBytes: UInt64?,
         tartHome: String = ProcessInfo.processInfo.environment["TART_HOME"] ?? "~/.tart"
     ) throws {
         guard let minimumFreeBytes else { return }
-        let disks = additionalDisks.map { ($0 as NSString).expandingTildeInPath }
+        let disks = additionalDisks.map { ($0.source as NSString).expandingTildeInPath }
         // This optional local policy is deliberately stricter than Tart's general
-        // attachment syntax: remote sources/options cannot silently bypass the gate.
+        // attachment syntax: remote sources cannot silently bypass the gate.
         for path in disks {
             let attributes = try FileManager.default.attributesOfItem(atPath: path)
             guard attributes[.type] as? FileAttributeType == .typeRegular else {
