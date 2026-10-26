@@ -1,9 +1,9 @@
 class FitbeeSand < Formula
   desc "Sand with additional Tart disks and a host free-space preflight"
   homepage "https://github.com/yqiang/sand"
-  url "https://github.com/yqiang/sand/archive/355557ec9e5dd68c69b6b08849d5224fd541399b.tar.gz"
-  version "20261026.1"
-  sha256 "82f03d820cb7630117d4121f8da0e879f47f53db9119cb62862d0a17c3555e43"
+  url "https://github.com/yqiang/sand/archive/d80e1b959fcb338e885f167274ee9ea7b8f697e1.tar.gz"
+  version "20261026.2"
+  sha256 "4d003e8bd78ef495f0233320b7982c15efdd77729dcb37a708fe1ce21b2b3869"
   license "MIT"
 
   depends_on :macos
